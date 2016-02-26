@@ -8,8 +8,8 @@ Parametric Cookie Cutter is licensed under a Creative Commons Attribution 4.0 In
 This package contains code to turn DXF-based outlines into cookie cutters for 3D printers.
 
 ## Versions ##
-1.0.0 -- first release
-1.0.1 -- added filled imprints
+* 1.0.0 -- first release
+* 1.0.1 -- added filled imprints
 
 ## Usage ##
 
