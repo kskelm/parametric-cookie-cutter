@@ -7,6 +7,10 @@ Parametric Cookie Cutter is licensed under a Creative Commons Attribution 4.0 In
 
 This package contains code to turn DXF-based outlines into cookie cutters for 3D printers.
 
+## Versions ##
+1.0.0 -- first release
+1.0.1 -- added filled imprints
+
 ## Usage ##
 
 Parametric Cookie Cutter (PCC) is intended to be used interactively by
@@ -50,7 +54,8 @@ Your object is expected to be near the origin.  It must be a 2D path.  Shapes do
   - **supportStripWidth:** The width in mm of each strip (default 10)
   - **supportStripSpacing:** The number of mm between strips, center-to-center (default 50).
   
-+ ***Cutting/Imprinting Edges***. There are parameters to control how the edges are generated.  The variables are:
++ ***Cutting/Imprinting***. There are parameters to control how the edges are generated.  The variables are:
+  - **fillImprints:** Set this to true if you want your imprints filled instead of being cutting edges.
   - **cutDepth:** This is the depth in mm of the edge.  This is a little bit of a misnomer because it's actually the depth of the entire object, including the flange.  The cut depth limits the depth of the cookie that can be cut.  If you want more height to accommodate thicker dough, change this (default 15).
   - **imprintDepth:** Like *cutDepth*, but for the imprint edges (default 10).  Note that the result is affected by the depth of the cookie dough; If the dough is thinner than **cutDepth**, then the imprint depth will be less pronounced.
   - **bladeThickness:** This is the thickness in mm of the cutting and imprint blades (default 1).

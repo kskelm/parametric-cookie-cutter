@@ -2,10 +2,13 @@
  * Author: Kevin Kelm
  * Email: triggur@gmail.com
  * Date: 2015-02-21
- * Version: 1.0.0
+ * Version: 1.0.1
  * License: Creative Commons CC-BY (Attribution)
  *
  */
+
+// 1.0.0 -- first release
+// 1.0.1 -- added filled imprints
 
 // NOTE: to play with the example files, scroll down to the
 // little commented out blocks further down, and uncomment
@@ -45,6 +48,11 @@ imprintFilename = "YOUR IMPRINT FILE (IF ANY) GOES HERE.dxf";
 // would be something saved out of AutoCAD in inches.
 scaleFactor = 5.5;
 
+// Sometimes you don't want imprint edges, you want imprint
+// areas.  Set this to true if you want the imprint regions
+// filled as solid stamps.
+fillImprints = false;
+
 // This defines how many support strips to create through
 // the middle of the cutter base in both directions.  These
 // strips provider structure to support any wobbly peninsulas
@@ -64,7 +72,7 @@ cutDepth = 15;
 // This is how deep the imprint edge goes (ditto).
 imprintDepth = 10;
 // This is how thick the cut blades are.
-bladeThickness = 1;
+bladeThickness = 1.2;
 
 // This is how thick the flange base should be.
 flangeThickness = 2;
@@ -133,6 +141,8 @@ numSupportStrips = 0;
 cutFlangeRadius = 6;
 */
 
+
+
 // =================================================
 // =================================================
 
@@ -148,9 +158,9 @@ cookieCutter();
  */
 module cookieCutter() {
   // cut edges offset to the outside and imprint edges offset to the inside.
-  shellAndFlange(cutFilename, cutDepth, false, cutFlangeRadius );
+  shellAndFlange(cutFilename, cutDepth, false, cutFlangeRadius, false );
   if (imprintFilename) {
-    shellAndFlange(imprintFilename, imprintDepth, true, imprintFlangeRadius );
+    shellAndFlange(imprintFilename, imprintDepth, true, imprintFlangeRadius, fillImprints );
   } // if
 
   // create a grid of strips to support internal structures that's
@@ -202,15 +212,19 @@ module shape( fileame ) {
  * it and provider a surface to help push
  * it into the dough.
  */
-module shellAndFlange(filename, depth, insideOffset, flangeRadius ) {
+module shellAndFlange(filename, depth, insideOffset, flangeRadius, filled ) {
   // make the shell outline
   linear_extrude(height = depth) {
     if( insideOffset ) {
       difference() {
         shape( filename );
-        offset(r = -bladeThickness ) {
-          shape( filename );
-        } // offset
+        if( filled ) {
+          cube( [0,0,0] );
+        } else {
+          offset(r = -bladeThickness ) {
+            shape( filename );
+          } // offset
+        } // if-else
       } //difference
     } else {
       difference() {
