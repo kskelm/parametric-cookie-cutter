@@ -9,6 +9,7 @@
 
 // 1.0.0 -- first release
 // 1.0.1 -- added filled imprints
+// 1.0.2 -- made inner flanges an option and defaulted it to false
 
 // NOTE: to play with the example files, scroll down to the
 // little commented out blocks further down, and uncomment
@@ -59,7 +60,7 @@ fillImprints = false;
 // or floating imprints in the middle of the cutter. Also,
 // you'll need to adjust these parameters if your shape has
 // islands that the default 50mm spacing doesn't hit.
-numsupportStrips = 0;
+numSupportStrips = 0;
 // This is the width of a support strip.  All measurements are in mm.
 supportStripWidth = 10;
 // This is how far apart strips are, center-to-center.
@@ -72,7 +73,7 @@ cutDepth = 15;
 // This is how deep the imprint edge goes (ditto).
 imprintDepth = 10;
 // This is how thick the cut blades are.
-bladeThickness = 1.2;
+bladeThickness = 1.5;
 
 // This is how thick the flange base should be.
 flangeThickness = 2;
@@ -80,6 +81,10 @@ flangeThickness = 2;
 // the edge. A small flange extends inward as well.
 cutFlangeRadius = 7;
 imprintFlangeRadius = cutFlangeRadius;
+// Whether flanges should extend inside the perimeters or not.
+// It's nice for stability, but it can also interfere with getting
+// the dough out once the cookie is cut.
+innerFlange = false;
 
 // This represents the work area. This only matters
 // to the extents of the internal support structure.
@@ -97,7 +102,7 @@ workDiameter = 1000;
 
 // ======================
 // smiley face settings
-
+/*
 cutFilename = "/Users/triggur/Projects/parametric-cookie-cutter/smiley_face_cut.dxf";
 imprintFilename = "/Users/triggur/Projects/parametric-cookie-cutter/smiley_face_imprint.dxf";
 scaleFactor = 5.5;
@@ -105,8 +110,9 @@ numSupportStrips = 2;
 supportStripWidth = 5;
 supportStripSpacing = 30;
 imprintDepth = 10;
-imprintFlangeRadius = 2;
-
+fillImprints = true;
+imprintFlangeRadius = 0;
+*/
 
 // ======================
 // round trefoil settings
@@ -124,10 +130,11 @@ numSupportStrips = 0;
 cutFilename = "/Users/triggur/Projects/parametric-cookie-cutter/radioactive_cut.dxf";
 imprintFilename = "/Users/triggur/Projects/Cookie Cutters/radioactive_imprint.dxf";
 scaleFactor = 9;
-numSupportStrips = 0;
+numSupportStrips = 1;
+supportStripWidth = 6;
 imprintDepth = 9;
-imprintFlangeRadius = 3.1;
-cutFlangeRadius = 5.5;
+imprintFlangeRadius = 0;
+cutFlangeRadius = 3.5;
 */
 
 
@@ -140,7 +147,6 @@ scaleFactor = 5;
 numSupportStrips = 0;
 cutFlangeRadius = 6;
 */
-
 
 
 // =================================================
@@ -236,15 +242,19 @@ module shellAndFlange(filename, depth, insideOffset, flangeRadius, filled ) {
     } // if-else
   } // extrude
 
-  // make the shelf around it 
+  // make the flange around it 
   linear_extrude(height = flangeThickness ) {
     difference() {
       offset(r = flangeRadius) {
         shape( filename );
       } // offset
-      offset(r = -flangeRadius / 3) {
+      if( innerFlange ) {
+        offset(r = -flangeRadius / 3) {
+          shape( filename );
+        } // offset
+      } else {
         shape( filename );
-      } // offset
+      } // if-else
     } // difference
   } // extrude
 

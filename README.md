@@ -10,6 +10,7 @@ This package contains code to turn DXF-based outlines into cookie cutters for 3D
 ## Versions ##
 * 1.0.0 -- first release
 * 1.0.1 -- added filled imprints
+* 1.0.2 -- made inner flanges an option and defaulted it to false
 
 ## Usage ##
 
@@ -19,11 +20,10 @@ fiddling with global variables in cookie_cutter.scad via OpenSCAD.  It may work 
 PCC generates shapes with the following features:
 * A cutting edge that is by default 15mm deep.
 * An imprint edge that is by default 10mm deep.
-* A flange that sticks out from the top of the cutting edges and also extends toward the center a small distance.  This is for rigidity and to provide an easy surface to push on
+* A flange that sticks out from the top of the cutting edges and also optionally extends toward the center a small distance.  This is for rigidity and to provide an easy surface to push on.
 * Optional strips going in both directions to support unconnected edges and internal peninsulas.
 
-Broadly speaking, there are several categories of tunable
-variables in this package.
+Broadly speaking, there are several categories of tunable variables in this package.
 
 ### DXF files ###
 PCC allows you to name up to two DXF files containing the outlines of the cookie cutter patterns:
@@ -45,9 +45,10 @@ To compensate, I added a scaling variable so nobody has to go back to the origin
 Your object is expected to be near the origin.  It must be a 2D path.  Shapes don't need to be closed. The work area is defined as about 1 meter square, specifically for the creation of support strips (see below).  1 meter is a hell of a cookie, but I'm not judging if you want it to be larger.  There's a constant in the file called **workDiameter** to declare this.
 
 ### Tuneables ###
-+ ***Flanges***.  A flange is printed to strengthen the edges and provide a surface to press on to push the cutter into the dough.  It's a little thicker than the edges. It sticks out, and it also sticks into the shape a little as well.  Sometimes playing with the flange sizes gives you the ability to skip the support strips, but it's a matter of balance and personal preference.  The flanges are controlled by the following variables:
++ ***Flanges***.  A flange is printed to strengthen the edges and provide a surface to press on to push the cutter into the dough.  It's a little thicker than the edges. It sticks out, and it can also optionally stick into the shape a little as well.  Sometimes playing with the flange sizes gives you the ability to skip the support strips, but it's a matter of balance and personal preference.  The flanges are controlled by the following variables:
   - **cutFlangeRadius:** This is the distance in mm that the flange sticks out from the cut edges.  It also sticks into the shape by a fraction of the distance  (default 7).
   - **imprintFlangeRadius:** This is the radius for imprint flanges (defaults to the value of *cutFlangeRadius*).
+  - **innerFlange:** If this is set true, a flange about a third the size of the outer one will be generated aimed toward the inside of the shape.  This is nice for structural reasons, but it can also interfere with trying to push the dough out after cutting the cookie (default false).
  
 + ***Support strips.*** Some shapes have internal floating features (like the smiley face example) or wobbly thin features (like the pi example).  If you use imprints, you'll need to play close attention to this to make sure you have strips that support your internal unconnected edges.  PCC will generate strips as part of the flange, controlled by the following variables:
   - **numSupportStrips:** The number of strips to generate in both directions.  Set this to 0 if you don't want any.  Strips are centered along the origin.  Note that you can keep on incrementing this and see no result if you don't also decrease the spacing (described below).  This is necessary because I fould no convenient means to have OpenSCAD calculate the bounding box of the shape.
