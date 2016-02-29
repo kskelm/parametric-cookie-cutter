@@ -10,11 +10,12 @@
 // 1.0.0 -- first release
 // 1.0.1 -- added filled imprints
 // 1.0.2 -- made inner flanges an option and defaulted it to false
+// 1.0.3 -- fiddled constants to be more realistic
+// 1.0.4 -- more documentation, new experimentation = new constants
 
 // NOTE: to play with the example files, scroll down to the
 // little commented out blocks further down, and uncomment
 // only the one you want to experiment with.
-// Sorry in advance for using absolute paths in my filesystem.
 // In general, the most frequently changed constants are
 // declared near the top of the file and they get more esoteric
 // the further down you go.
@@ -51,7 +52,10 @@ scaleFactor = 5.5;
 
 // Sometimes you don't want imprint edges, you want imprint
 // areas.  Set this to true if you want the imprint regions
-// filled as solid stamps.
+// filled as solid stamps.  Generally, you won't need to
+// print imprint flanges if you're filling the imprints,
+// unless you need the flange to reach support structures
+// to hold them in place.
 fillImprints = false;
 
 // This defines how many support strips to create through
@@ -62,16 +66,17 @@ fillImprints = false;
 // islands that the default 50mm spacing doesn't hit.
 numSupportStrips = 0;
 // This is the width of a support strip.  All measurements are in mm.
-supportStripWidth = 10;
+supportStripWidth = 4;
 // This is how far apart strips are, center-to-center.
 supportStripSpacing = 50;
+
 
 // This represents how deep the cutter edge goes (but actually
 // this includes the flange, so it's really the depth of the whole
 // object).
-cutDepth = 15;
+cutDepth = 9;
 // This is how deep the imprint edge goes (ditto).
-imprintDepth = 10;
+imprintDepth = 7;
 // This is how thick the cut blades are.
 bladeThickness = 1.5;
 
@@ -96,20 +101,18 @@ workDiameter = 1000;
 
 // =================================================
 // Examples.  Uncomment only one of these to get
-// that example file.  You'll have to modify the
-// absolute paths.  Sorry about that.
+// that example file.
 // =================================================
 
 // ======================
 // smiley face settings
 /*
-cutFilename = "/Users/triggur/Projects/parametric-cookie-cutter/smiley_face_cut.dxf";
-imprintFilename = "/Users/triggur/Projects/parametric-cookie-cutter/smiley_face_imprint.dxf";
+cutFilename = "smiley_face_cut.dxf";
+imprintFilename = "smiley_face_imprint.dxf";
 scaleFactor = 5.5;
 numSupportStrips = 2;
 supportStripWidth = 5;
 supportStripSpacing = 30;
-imprintDepth = 10;
 fillImprints = true;
 imprintFlangeRadius = 0;
 */
@@ -117,7 +120,7 @@ imprintFlangeRadius = 0;
 // ======================
 // round trefoil settings
 /*
-cutFilename = "/Users/triggur/Projects/parametric-cookie-cutter/round_trefoil.dxf";
+cutFilename = "round_trefoil.dxf";
 imprintFilename = "";
 scaleFactor = 5;
 numSupportStrips = 0;
@@ -127,27 +130,108 @@ numSupportStrips = 0;
 // ======================
 // radiation settings
 /*
-cutFilename = "/Users/triggur/Projects/parametric-cookie-cutter/radioactive_cut.dxf";
-imprintFilename = "/Users/triggur/Projects/Cookie Cutters/radioactive_imprint.dxf";
+cutFilename = "radioactive_cut.dxf";
+imprintFilename = "radioactive_imprint.dxf";
 scaleFactor = 9;
-numSupportStrips = 1;
-supportStripWidth = 6;
-imprintDepth = 9;
+numSupportStrips = 0;
+supportStripWidth = 4;
 imprintFlangeRadius = 0;
 cutFlangeRadius = 3.5;
+fillImprints = true;
 */
 
 
 // ======================
 // pi settings
 /*
-cutFilename = "/Users/triggur/Projects/parametric-cookie-cutter/pi.dxf";
+cutFilename = "pi.dxf";
 imprintFilename = "";
 scaleFactor = 5;
 numSupportStrips = 0;
 cutFlangeRadius = 6;
 */
 
+// ======================
+// superman settings
+/*
+cutFilename = "superman_cut.dxf";
+imprintFilename = "superman_imprint.dxf";
+scaleFactor = 17;
+numSupportStrips = 2;
+supportStripWidth = 6;
+supportStripSpacing = 25;
+fillImprints = true;
+cutFlangeRadius = 3;
+imprintFlangeRadius = 0;
+*/
+
+// ======================
+// batman settings
+/*
+cutFilename = "batman_cut.dxf";
+imprintFilename = "batman_imprint.dxf";
+scaleFactor = 13;
+// if you set numSupportStrips to zero, then the imprint pattern will
+// be created in the center without supports.  This can be an advantage
+// when you have a complex shape and you don't trust it to come out of the
+// cutter cleanly.  That way you use the oval cutter and then just press
+// the bat imprint into it once that's done.  Another way to do this would
+// be to run this script with the imprint file AS the cut file and it will
+// still generate structure inside the imprint, but it will be separate.
+// Yet another way to do this if there are floating pieces like in the smiley
+// face would be to make the oval cut, and then do another with the
+// cut and imprint files reversed so that the cut pattern becomes just a
+// handle of sorts that still contains the imprint pieces, and the
+// imprint sticks out further than the cut.
+numSupportStrips = 1;
+supportStripWidth = 4;
+supportStripSpacing = 40;
+fillImprints = false;
+cutFlangeRadius = 4;
+imprintFlangeRadius = 1;
+*/
+
+// ======================
+// J settings
+// (why J?  it's a grandkid's initial)
+/*
+cutFilename = "letter_j.dxf";
+imprintFilename = "";
+scaleFactor = 17;
+numSupportStrips = 0;
+supportStripWidth = 5;
+supportStripSpacing = 10;
+imprintDepth = 10;
+cutFlangeRadius = 6;
+*/
+
+// ======================
+// G settings
+// (why G?  it's a grandkid's initial)
+/*
+cutFilename = "letter_g.dxf";
+imprintFilename = "";
+scaleFactor = 17;
+numSupportStrips = 0;
+supportStripWidth = 4;
+supportStripSpacing = 70;
+imprintDepth = 10;
+cutFlangeRadius = 6;
+*/
+
+// ======================
+// S settings
+// (why S?  it's a grandkid's initial)
+/*
+cutFilename = "letter_s.dxf";
+imprintFilename = "";
+scaleFactor = 15.5;
+numSupportStrips = 0;
+supportStripWidth = 5;
+supportStripSpacing = 10;
+imprintDepth = 10;
+cutFlangeRadius = 6;
+*/
 
 // =================================================
 // =================================================
@@ -163,6 +247,7 @@ cookieCutter();
  * place.
  */
 module cookieCutter() {
+  
   // cut edges offset to the outside and imprint edges offset to the inside.
   shellAndFlange(cutFilename, cutDepth, false, cutFlangeRadius, false );
   if (imprintFilename) {
