@@ -77,10 +77,11 @@ I came into this completely naïve.  I'm an engineer, not a baker.  Cookies... d
 
 Also my first attempts were way too deep; they were about 15mm deep on the cuts and 7mm deep on the imprints, stamped into dough about a half inch deep.  Also wrong.
 
-Far be it from me to get between experienced bakers and their recipes, but we've included a recipe with some additional instructions.
+Gary Rechnitz has included a recipe with some additional instructions.
 
 
 ## Development ##
 
 Feel free to fork this in github and request pulls.
+
 
