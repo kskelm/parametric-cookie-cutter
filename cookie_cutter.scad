@@ -70,6 +70,10 @@ supportStripWidth = 4;
 // This is how far apart strips are, center-to-center.
 supportStripSpacing = 50;
 
+// Number of sections for the blade.
+bladeSections = 6;
+// Minimum size of the inside bit.
+minBladeThickness = 0.2;
 
 // This represents how deep the cutter edge goes (but actually
 // this includes the flange, so it's really the depth of the whole
@@ -246,12 +250,12 @@ cookieCutter();
  * for strength and to hold internal pieces in the right
  * place.
  */
+
 module cookieCutter() {
-  
   // cut edges offset to the outside and imprint edges offset to the inside.
-  shellAndFlange(cutFilename, cutDepth, false, cutFlangeRadius, false );
+  shellAndFlange(cutFilename, cutDepth, false, cutFlangeRadius, false);
   if (imprintFilename) {
-    shellAndFlange(imprintFilename, imprintDepth, true, imprintFlangeRadius, fillImprints );
+    shellAndFlange(imprintFilename, imprintDepth, true, imprintFlangeRadius, fillImprints);
   } // if
 
   // create a grid of strips to support internal structures that's
@@ -259,42 +263,39 @@ module cookieCutter() {
   if (numSupportStrips) {
     intersection() {
       union() {
-          
         // x-strips
         stripStartX = -supportStripSpacing / 2 * (numSupportStrips - 1) - supportStripWidth / 2;
-        for (stripNum = [0: numSupportStrips - 1]) {
-          translate([stripStartX + stripNum * supportStripSpacing, -workDiameter / 2, 0]) {
-            cube([supportStripWidth, workDiameter, flangeThickness]);
-          } // translate
-        } // for
-        
+        for (stripNum = [0:numSupportStrips - 1]) {
+          translate([ stripStartX + stripNum * supportStripSpacing, -workDiameter / 2, 0 ])
+          { cube([ supportStripWidth, workDiameter, flangeThickness ]); } // translate
+        }                                                                 // for
+
         // y-strips
         stripStartY = -supportStripSpacing / 2 * (numSupportStrips - 1) - supportStripWidth / 2;
-        for (stripNum = [0: numSupportStrips - 1]) {
-          translate([-workDiameter / 2, stripStartY + stripNum * supportStripSpacing, -0]) {
-            cube([workDiameter, supportStripWidth, flangeThickness]);
+        for (stripNum = [0:numSupportStrips - 1]) {
+          translate([ -workDiameter / 2, stripStartY + stripNum * supportStripSpacing, -0 ])
+          { // make a cube
+            cube([ workDiameter, supportStripWidth, flangeThickness ]);
           } // translate
-        } // for
-
-      } // union
+        }   // for
+      }     // union
       linear_extrude(height = flangeThickness) {
-        shape( cutFilename );
+        shape(cutFilename);
       } // extrude
-    } // difference 
-
-  } // if
+    }   // difference
+  }     // if
 } // cookieCutter
 
 /*
  * convenience module because I load the same DXF files over and over
  * again.
  */
-module shape( fileame ) {
-  scale( [ scaleFactor, scaleFactor, 1] ) {
-    mirror([1, 0, 0]) {
-      import( fileame );
+module shape(fileame) {
+  scale([ scaleFactor, scaleFactor, 1 ]) {
+    mirror([ 1, 0, 0 ]) {
+      import(fileame);
     } // mirror
-  } // scale
+  }   // scale
 } // shape
 
 /*
@@ -303,44 +304,61 @@ module shape( fileame ) {
  * it and provider a surface to help push
  * it into the dough.
  */
-module shellAndFlange(filename, depth, insideOffset, flangeRadius, filled ) {
+module shellAndFlange(filename, depth, insideOffset, flangeRadius, filled) {
   // make the shell outline
-  linear_extrude(height = depth) {
-    if( insideOffset ) {
+  if (insideOffset) {
+    linear_extrude(height = depth) {
       difference() {
-        shape( filename );
-        if( filled ) {
-          cube( [0,0,0] );
+        shape(filename);
+        if (filled) {
+          cube([ 0, 0, 0 ]);
         } else {
-          offset(r = -bladeThickness ) {
-            shape( filename );
+          offset(r = -bladeThickness) {
+            shape(filename);
           } // offset
-        } // if-else
-      } //difference
-    } else {
-      difference() {
-        offset(r = bladeThickness ) {
-          shape( filename );
-        } // offset
-        shape( filename );
-      } // difference
-    } // if-else
-  } // extrude
+        }   // if-else
+      }     // differenceß
+    }
+  } else {
+    // Ramp in an couple of steps.
+    sectionThickness = (bladeThickness - minBladeThickness) / (bladeSections - 1);
+    union() {
+      linear_extrude(height = depth) {
+        difference() {
+          offset(r = minBladeThickness) {
+            shape(filename);
+          } // offset
+          shape(filename);
+        } // difference
+      }
+      for (i = [0:bladeSections - 1]) {
+        linear_extrude(height = depth - i * sectionThickness) {
+          difference() {
+            offset(r = minBladeThickness + sectionThickness * (i + 1)) {
+              shape(filename);
+            } // offset
+            offset(r = minBladeThickness + sectionThickness * (i)) {
+              shape(filename);
+            }
+          } // difference
+        }
+      }
+    }
+  } // if-else
 
-  // make the flange around it 
-  linear_extrude(height = flangeThickness ) {
+  // make the flange around it
+  linear_extrude(height = flangeThickness) {
     difference() {
       offset(r = flangeRadius) {
-        shape( filename );
+        shape(filename);
       } // offset
-      if( innerFlange ) {
+      if (innerFlange) {
         offset(r = -flangeRadius / 3) {
-          shape( filename );
+          shape(filename);
         } // offset
       } else {
-        shape( filename );
+        shape(filename);
       } // if-else
-    } // difference
-  } // extrude
-
+    }   // difference
+  }     // extrude
 } // shellAndFlange
